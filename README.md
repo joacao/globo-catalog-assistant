@@ -1,0 +1,1 @@
+# globo-catalog-assistant
