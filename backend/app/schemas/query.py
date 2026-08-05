@@ -1,3 +1,4 @@
+from typing import List
 from pydantic import BaseModel, Field
 
 class AskRequest(BaseModel):
@@ -5,9 +6,9 @@ class AskRequest(BaseModel):
 
 class BookReference(BaseModel):
     id: str
-    title: str
-    author: str
+    titulo: str
+    autores: List[str]
 
 class AskResponse(BaseModel):
     answer: str
-    references: list[BookReference]
+    references: List[BookReference]

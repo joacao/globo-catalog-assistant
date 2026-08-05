@@ -1,12 +1,14 @@
-from pydantic_settings import BaseSettings
+import os
+from pydantic_settings import BaseSettings, SettingsConfigDict
+from pathlib import Path
 
-from pydantic_settings import BaseSettings
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = "Assistente de Curadoria do Catálogo"
     API_V1_STR: str = "/api/v1"
     
-    GEMINI_API_KEY: str = ""
+    OPENAI_API_KEY: str 
     QDRANT_HOST: str = "qdrant"
     QDRANT_PORT: int = 6333
     
@@ -17,7 +19,11 @@ class Settings(BaseSettings):
         "http://127.0.0.1:5173",
     ]
 
-    class Config:
-        env_file = ".env"
+    model_config = SettingsConfigDict(
+        # Procura primeiro na raiz, depois no diretório local como fallback
+        env_file=(BASE_DIR / ".env", ".env"),
+        env_file_encoding="utf-8",
+        extra="ignore"
+    )
 
 settings = Settings()
