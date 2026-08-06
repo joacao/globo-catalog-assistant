@@ -11,6 +11,10 @@ class Settings(BaseSettings):
     OPENAI_API_KEY: str 
     QDRANT_HOST: str = "qdrant"
     QDRANT_PORT: int = 6333
+
+    LANGFUSE_PUBLIC_KEY: str = ""
+    LANGFUSE_SECRET_KEY: str = ""
+    LANGFUSE_HOST: str = "http://langfuse-web:3000"
     
     # Lista de URLs permitidas para CORS
     ALLOWED_ORIGINS: list[str] = [

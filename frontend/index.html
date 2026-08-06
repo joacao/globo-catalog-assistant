@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Assistente de Curadoria - Editora Globo</title>
+    <!-- Tailwind CSS Runtime + Typography plugin -->
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              globoBlue: '#0054a6',
+              globoBlueHover: '#004080',
+              globoDark: '#0f172a',
+            }
+          }
+        }
+      }
+    </script>
+  </head>
+  <body class="bg-slate-100 text-slate-900 font-sans antialiased">
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

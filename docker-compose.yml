@@ -9,13 +9,32 @@ services:
       - "8000:8000"
     volumes:
       - ./backend:/app
+    env_file:
+      - .env
     environment:
       - QDRANT_HOST=qdrant
       - QDRANT_PORT=6333
-    env_file:
-      - .env
+      # Aponta internamente para a rede do Docker
+      - LANGFUSE_HOST=http://langfuse-web:3000
+      - LANGFUSE_SDK_INGESTION_TYPE=batch
+    command: sh -c "pip install 'langfuse>=2.35.0,<3.0.0' && uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
     depends_on:
       - qdrant
+      - langfuse-web
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_URL=http://localhost:8000/api/v1
+    depends_on:
+      - backend
 
   qdrant:
     image: qdrant/qdrant:latest
@@ -25,5 +44,30 @@ services:
     volumes:
       - qdrant_storage:/qdrant/storage
 
+  # --- NOVO: BANCO DE DADOS DO LANGFUSE ---
+  langfuse-db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=langfuse
+      - POSTGRES_PASSWORD=langfuse
+      - POSTGRES_DB=langfuse
+    volumes:
+      - langfuse_db_data:/var/lib/postgresql/data
+
+  langfuse-web:
+    image: langfuse/langfuse:2
+    restart: always # REINICIA AUTOMATICAMENTE SE O BANCO DEMORAR PARA SUBIR
+    ports:
+      - "3001:3000"
+    environment:
+      - DATABASE_URL=postgresql://langfuse:langfuse@langfuse-db:5432/langfuse
+      - NEXTAUTH_SECRET=chave_secreta_local_qualquer_para_sessao
+      - SALT=sal_secreto_local_qualquer
+      - NEXTAUTH_URL=http://localhost:3001
+      - TELEMETRY_ENABLED=false
+    depends_on:
+      - langfuse-db
+
 volumes:
   qdrant_storage:
+  langfuse_db_data:
