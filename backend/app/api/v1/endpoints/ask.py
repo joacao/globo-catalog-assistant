@@ -8,13 +8,15 @@ router = APIRouter()
 @router.post("/ask", response_model=AskResponse)
 async def ask_question(request: AskRequest):
     try:
-        answer, references = await rag_service.answer_question(
+        answer, references, conversation_id = await rag_service.answer_question(
             question=request.question,
-            filters=request.filters
+            filters=request.filters,
+            conversation_id=request.conversation_id
         )
         return AskResponse(
             answer=answer,
-            references=references
+            references=references,
+            conversation_id=conversation_id
         )
     except Exception as e:
         traceback.print_exc()

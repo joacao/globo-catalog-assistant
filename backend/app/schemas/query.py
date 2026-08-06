@@ -8,6 +8,9 @@ class BookFilter(BaseModel):
 class AskRequest(BaseModel):
     question: str = Field(..., min_length=1, description="Pergunta do usuário")
     filters: Optional[BookFilter] = None
+    conversation_id: Optional[str] = Field(
+        None, description="ID da conversa. Se omitido, uma nova conversa é iniciada."
+    )
 
 class BookReference(BaseModel):
     id: str
@@ -17,3 +20,4 @@ class BookReference(BaseModel):
 class AskResponse(BaseModel):
     answer: str
     references: List[BookReference]
+    conversation_id: str
